@@ -97,6 +97,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     return NestedScrollView(
       headerSliverBuilder: (buildContext, innerBoxIsScrolled) => <Widget>[
         SliverAppBar(
+          pinned: true,
           title: TabBar(
             controller: _tabController,
             isScrollable: true,
@@ -113,12 +114,13 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
         child: TabBarView(
           controller: _tabController,
           children: _categories.map((Map map) => Container(
-            color: Colors.blue,
             child: StaggeredGridView.countBuilder(
               itemCount: _photos.length,
+                mainAxisSpacing: 2,
+                crossAxisSpacing: 2,
                 crossAxisCount: 2,
                 itemBuilder: (BuildContext buildContext, int index) => Image.network("https://gallery.1x.com"+_photos[index]["url"]),
-                staggeredTileBuilder: (index) => StaggeredTile.fit(4)),
+                staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
           )).toList(),
         ),
       ),
