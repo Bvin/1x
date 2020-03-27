@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
+import 'package:onex/photo_page.dart';
 
 void main() => runApp(HomePage());
 
@@ -119,7 +120,11 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                 mainAxisSpacing: 2,
                 crossAxisSpacing: 2,
                 crossAxisCount: 2,
-                itemBuilder: (BuildContext buildContext, int index) => Image.network("https://gallery.1x.com"+_photos[index]["url"]),
+                itemBuilder: (BuildContext buildContext, int index) =>
+                GestureDetector(child: Image.network("https://gallery.1x.com"+_photos[index]["url"]),
+                  onTap: (){
+                  Navigator.of(buildContext).push(MaterialPageRoute(builder: (c) => PhotoPage("https://gallery.1x.com"+_photos[index]["url"])));
+                  },),
                 staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
           )).toList(),
         ),
