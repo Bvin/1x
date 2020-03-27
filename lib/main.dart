@@ -73,6 +73,13 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
         print(m.group(0));
     }
     print("end");
+    print("start");
+    regExp = RegExp("&copy;.*?<");
+    matches = regExp.allMatches(data);
+    for (Match m in matches) {
+      print(m.group(0));
+    }
+    print("end");
   }
 
   body() {
