@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class PhotoPage extends StatefulWidget{
 
@@ -16,7 +17,7 @@ class PhotoPage extends StatefulWidget{
 class PageState extends State<PhotoPage>{
   @override
   Widget build(BuildContext context) {
-    return Image.network(widget.url.replaceAll("ld", "hd4"));
+    return PhotoView(imageProvider: NetworkImage(widget.url.replaceAll("ld", "hd4")),);
   }
 
 }
