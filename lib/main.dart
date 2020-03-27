@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
 
@@ -89,6 +90,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     }
     print("end");
     print(_photos);
+    setState(() {});
   }
 
   body() {
@@ -112,7 +114,11 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
           controller: _tabController,
           children: _categories.map((Map map) => Container(
             color: Colors.blue,
-            child: Text(map["category_name"]),
+            child: StaggeredGridView.countBuilder(
+              itemCount: _photos.length,
+                crossAxisCount: 2,
+                itemBuilder: (BuildContext buildContext, int index) => Image.network("https://gallery.1x.com"+_photos[index]["url"]),
+                staggeredTileBuilder: (index) => StaggeredTile.fit(4)),
           )).toList(),
         ),
       ),
