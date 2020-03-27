@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
 
   List<Map> _categories;
+  List<Map> _photos = List();
   TabController _tabController;
 
   @override
@@ -70,16 +71,24 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     Iterable<Match> matches = regExp.allMatches(data);
     print(matches.length);
     for (Match m in matches) {
-        print(m.group(0));
+      Map map = Map();
+      map["url"] = m.group(0);
+      _photos.add(map);
+        //print(m.group(0));
     }
     print("end");
     print("start");
     regExp = RegExp("&copy;.*?<");
-    matches = regExp.allMatches(data);
-    for (Match m in matches) {
+    Iterable<Match>  _matches = regExp.allMatches(data);
+    for (int i=0;i<_matches.length;i++) {
+      Match m = _matches.elementAt(i);
+      Map map = _photos[i];
+      String name = m.group(0);
+      map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf("<")).trim();
       print(m.group(0));
     }
     print("end");
+    print(_photos);
   }
 
   body() {
