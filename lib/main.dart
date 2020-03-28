@@ -119,29 +119,28 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             if(map["category_id"] == 0){
               html("https://1x.com/","<")
                   .then((list) {
-                _photos = list;
+                //_photos = list;
+                map["list"] = list;
                 setState(() {});
               });
             }else {
               html("https://1x.com/photos/latest/" + map["category_name"],'\"')
                   .then((list) {
-                _photos = list;
+                map["list"] = list;
                 setState(() {});
               });
             }
-            if(_photos.isEmpty){
-              return Container();
-            }else {
+            if(map.containsKey("list")){
               return Container(
                 child: StaggeredGridView.countBuilder(
-                    itemCount: _photos.length,
+                    itemCount: map["list"].length,
                     mainAxisSpacing: 2,
                     crossAxisSpacing: 2,
                     crossAxisCount: 2,
                     itemBuilder: (BuildContext buildContext, int index) =>
                         GestureDetector(child: Image.network(
                             "https://gallery.1x.com" +
-                                _photos[index]["url"]),
+                                map["list"][index]["url"]),
                           onTap: () {
                             Navigator.of(buildContext).push(MaterialPageRoute(
                                 builder: (c) =>
@@ -150,6 +149,8 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                           },),
                     staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
               );
+            }else {
+              return Container();
             }
           }).toList(),
         ),
