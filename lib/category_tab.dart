@@ -46,13 +46,15 @@ class TabState extends State<CategoryTab>{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: StaggeredGridView.countBuilder(
-        controller: _scrollController,
-        itemCount: _photos.length,
+    return RefreshIndicator(
+      onRefresh: _refreshData,
+      child: Container(
+        child: StaggeredGridView.countBuilder(
+          controller: _scrollController,
+          itemCount: _photos.length,
           crossAxisCount: 2,
           itemBuilder: (BuildContext buildContext, int index) {
-          print(index);
+            print(index);
             var url = "https://gallery.1x.com" + _photos[index]["url"];
             return GestureDetector(
               child: CachedNetworkImage(imageUrl: url,),
@@ -62,8 +64,16 @@ class TabState extends State<CategoryTab>{
             );
           },
           staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+        ),
       ),
     );
+  }
+
+  Future<Null> _refreshData() async {
+    _photos.clear();
+    setState(() {});
+    _loadIndex = 0;
+    load();
   }
 
   load() async {
