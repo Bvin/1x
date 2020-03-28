@@ -23,7 +23,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   @override
   void initState() {
     localCategories();
-    html();
+    html("https://1x.com/");
     super.initState();
   }
 
@@ -64,9 +64,10 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     _tabController = TabController(length: _categories.length, vsync: this);
   }
 
-  html() async {
+  Future html(url) async {
+    List<Map> photos = List();
     Dio dio = Dio();
-    Response response = await dio.get("https://1x.com/");
+    Response response = await dio.get(url);
     String data = response.data;
     print("start");
     RegExp regExp = RegExp("\/images\/user.*?jpg");
@@ -75,7 +76,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     for (Match m in matches) {
       Map map = Map();
       map["url"] = m.group(0);
-      _photos.add(map);
+      photos.add(map);
         //print(m.group(0));
     }
     print("end");
@@ -84,13 +85,14 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     Iterable<Match>  _matches = regExp.allMatches(data);
     for (int i=0;i<_matches.length;i++) {
       Match m = _matches.elementAt(i);
-      Map map = _photos[i];
+      Map map = photos[i];
       String name = m.group(0);
       map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf("<")).trim();
       print(m.group(0));
     }
     print("end");
-    print(_photos);
+    print(photos);
+    return photos;
     setState(() {});
   }
 
@@ -114,19 +116,41 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
       body: Container(
         child: TabBarView(
           controller: _tabController,
-          children: _categories.map((Map map) => Container(
-            child: StaggeredGridView.countBuilder(
-              itemCount: _photos.length,
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 2,
-                crossAxisCount: 2,
-                itemBuilder: (BuildContext buildContext, int index) =>
-                GestureDetector(child: Image.network("https://gallery.1x.com"+_photos[index]["url"]),
-                  onTap: (){
-                  Navigator.of(buildContext).push(MaterialPageRoute(builder: (c) => PhotoPage("https://gallery.1x.com"+_photos[index]["url"])));
-                  },),
-                staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
-          )).toList(),
+          children: _categories.map((Map map) {
+            List<Map> photosOfCat = List();
+            if(map["category_id"] == 0){
+              photosOfCat = _photos;
+              setState(() {});
+            }else {
+              html("https://1x.com/photos/latest/" + map["category_name"])
+                  .then((list) {
+                photosOfCat = list;
+                setState(() {});
+              });
+            }
+            if(photosOfCat.isEmpty){
+              return Container();
+            }else {
+              return Container(
+                child: StaggeredGridView.countBuilder(
+                    itemCount: photosOfCat.length,
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 2,
+                    crossAxisCount: 2,
+                    itemBuilder: (BuildContext buildContext, int index) =>
+                        GestureDetector(child: Image.network(
+                            "https://gallery.1x.com" +
+                                photosOfCat[index]["url"]),
+                          onTap: () {
+                            Navigator.of(buildContext).push(MaterialPageRoute(
+                                builder: (c) =>
+                                    PhotoPage("https://gallery.1x.com" +
+                                        _photos[index]["url"])));
+                          },),
+                    staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
+              );
+            }
+          }).toList(),
         ),
       ),
     );
