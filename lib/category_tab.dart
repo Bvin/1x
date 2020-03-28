@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import 'event_bus_service.dart';
+
 class CategoryTab extends StatefulWidget{
 
   final cat;
@@ -20,12 +22,17 @@ class TabState extends State<CategoryTab>{
   List<Map> _photos = List();
   Dio _dio;
   String _sort = "latest";
-  int _pageIndex = 0;
+  int _loadIndex = 0;
 
   @override
   void initState() {
     _dio = Dio();
     super.initState();
+    eventBus.on("onTabChange", (arg) {
+      if (arg == widget.cat) {
+        load();
+      }
+    });
   }
 
   @override
@@ -53,11 +60,12 @@ class TabState extends State<CategoryTab>{
         queryParameters: {
           "app": "photos",
           "cat": widget.cat,
-          "from": _pageIndex,
+          "from": _loadIndex,
           "sort": _sort,
         }
     );
     List<Map> parsedPhotos = parse(response.data);
+    _loadIndex += parsedPhotos.length;
     _photos.addAll(parsedPhotos);
     setState(() {});
   }

@@ -5,6 +5,9 @@ import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
 import 'package:onex/photo_page.dart';
 
+import 'category_tab.dart';
+import 'event_bus_service.dart';
+
 void main() => runApp(HomePage());
 
 class HomePage extends StatefulWidget {
@@ -66,13 +69,14 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     _tabController.addListener((){
       print(_tabController.index);
       var map = _categories[_tabController.index];
+      eventBus.emit("onTabChange",map["category_name"]);
       print(map);
-      html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+      /*html("https://1x.com/photos/latest/" + map["category_name"],'\"')
           .then((list) {
             print(list);
         map["list"] = list;
         setState(() {});
-      });
+      });*/
     });
   }
 
@@ -162,13 +166,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                   setState(() {});
                 });
               }else {
-                /*Future.delayed(Duration(milliseconds: 800), (){
-                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
-                    .then((list) {
-                  map["list"] = list;
-                  setState(() {});
-                });
-              });*/
+                return CategoryTab(map["category_name"]);
               }
               return Container();
             }
