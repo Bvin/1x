@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'event_bus_service.dart';
+import 'gallary_page.dart';
 
 class CategoryTab extends StatefulWidget{
 
@@ -59,7 +60,11 @@ class TabState extends State<CategoryTab>{
             return GestureDetector(
               child: CachedNetworkImage(imageUrl: url,),
               onTap: () {
-
+                Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (bc) => GalleryPage(_photos,index)
+                    )
+                );
               },
             );
           },
