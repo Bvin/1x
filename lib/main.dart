@@ -117,15 +117,9 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             indicatorWeight: 1,
             indicatorColor: Colors.white,
             indicatorSize: TabBarIndicatorSize.label,
-            tabs: _categories.map((Map map) => GestureDetector(child: Container(
+            tabs: _categories.map((Map map) => Container(
               child: Text(map["category_name"]),
-            ),onTap: (){
-                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
-                    .then((list) {
-                  map["list"] = list;
-                  setState(() {});
-                });
-            },)).toList(),
+            )).toList(),
           ),
         ),
       ],
