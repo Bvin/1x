@@ -23,10 +23,19 @@ class TabState extends State<CategoryTab>{
   Dio _dio;
   String _sort = "latest";
   int _loadIndex = 0;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     _dio = Dio();
+    _scrollController = ScrollController();
+    _scrollController.addListener((){
+      if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
+        load();
+        print("加载下一页");
+      }
+
+    });
     super.initState();
     eventBus.on("onTabChange", (arg) {
       if (arg == widget.cat) {
@@ -39,9 +48,11 @@ class TabState extends State<CategoryTab>{
   Widget build(BuildContext context) {
     return Container(
       child: StaggeredGridView.countBuilder(
+        controller: _scrollController,
         itemCount: _photos.length,
           crossAxisCount: 2,
           itemBuilder: (BuildContext buildContext, int index) {
+          print(index);
             var url = "https://gallery.1x.com" + _photos[index]["url"];
             return GestureDetector(
               child: CachedNetworkImage(imageUrl: url,),
