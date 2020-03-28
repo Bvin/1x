@@ -23,7 +23,6 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   @override
   void initState() {
     localCategories();
-    html("https://1x.com/");
     super.initState();
   }
 
@@ -64,7 +63,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     _tabController = TabController(length: _categories.length, vsync: this);
   }
 
-  Future html(url) async {
+  Future html(url,nameEndQuot) async {
     List<Map> photos = List();
     Dio dio = Dio();
     Response response = await dio.get(url);
@@ -81,13 +80,13 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     }
     print("end");
     print("start");
-    regExp = RegExp("&copy;.*?<");
+    regExp = RegExp("&copy;.*?"+nameEndQuot);
     Iterable<Match>  _matches = regExp.allMatches(data);
     for (int i=0;i<_matches.length;i++) {
       Match m = _matches.elementAt(i);
       Map map = photos[i];
       String name = m.group(0);
-      map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf("<")).trim();
+      map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf(nameEndQuot)).trim();
       print(m.group(0));
     }
     print("end");
@@ -117,30 +116,32 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
         child: TabBarView(
           controller: _tabController,
           children: _categories.map((Map map) {
-            List<Map> photosOfCat = List();
             if(map["category_id"] == 0){
-              photosOfCat = _photos;
-              setState(() {});
-            }else {
-              html("https://1x.com/photos/latest/" + map["category_name"])
+              html("https://1x.com/","<")
                   .then((list) {
-                photosOfCat = list;
+                _photos = list;
+                setState(() {});
+              });
+            }else {
+              html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+                  .then((list) {
+                _photos = list;
                 setState(() {});
               });
             }
-            if(photosOfCat.isEmpty){
+            if(_photos.isEmpty){
               return Container();
             }else {
               return Container(
                 child: StaggeredGridView.countBuilder(
-                    itemCount: photosOfCat.length,
+                    itemCount: _photos.length,
                     mainAxisSpacing: 2,
                     crossAxisSpacing: 2,
                     crossAxisCount: 2,
                     itemBuilder: (BuildContext buildContext, int index) =>
                         GestureDetector(child: Image.network(
                             "https://gallery.1x.com" +
-                                photosOfCat[index]["url"]),
+                                _photos[index]["url"]),
                           onTap: () {
                             Navigator.of(buildContext).push(MaterialPageRoute(
                                 builder: (c) =>
