@@ -106,9 +106,15 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             indicatorWeight: 1,
             indicatorColor: Colors.white,
             indicatorSize: TabBarIndicatorSize.label,
-            tabs: _categories.map((Map map) => Container(
+            tabs: _categories.map((Map map) => GestureDetector(child: Container(
               child: Text(map["category_name"]),
-            )).toList(),
+            ),onTap: (){
+                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+                    .then((list) {
+                  map["list"] = list;
+                  setState(() {});
+                });
+            },)).toList(),
           ),
         ),
       ],
@@ -124,11 +130,13 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                 setState(() {});
               });
             }else {
-              html("https://1x.com/photos/latest/" + map["category_name"],'\"')
-                  .then((list) {
-                map["list"] = list;
-                setState(() {});
-              });
+              /*Future.delayed(Duration(milliseconds: 800), (){
+                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+                    .then((list) {
+                  map["list"] = list;
+                  setState(() {});
+                });
+              });*/
             }
             if(map.containsKey("list")){
               return Container(
