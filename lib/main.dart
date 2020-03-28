@@ -19,9 +19,11 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   List<Map> _categories;
   List<Map> _photos = List();
   TabController _tabController;
+  Dio _dio;
 
   @override
   void initState() {
+    _dio = Dio();
     localCategories();
     super.initState();
   }
@@ -72,6 +74,10 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
         setState(() {});
       });
     });
+  }
+
+  api(){
+    _dio.get("https://1x.com/backend/loadmore.php",);
   }
 
   Future html(url,nameEndQuot) async {
