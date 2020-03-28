@@ -40,27 +40,38 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   localCategories(){
     _categories = <Map>[
       {"category_id":0,"category_name":"Home",},
-      {"category_id":15,"category_name":"Abstract",},
-      {"category_id":1,"category_name":"Action",},
-      {"category_id":21,"category_name":"Animals",},
-      {"category_id":11,"category_name":"Architecture",},
-      {"category_id":17,"category_name":"Conceptual",},
-      {"category_id":10,"category_name":"Creative edit",},
-      {"category_id":8,"category_name":"Documentary",},
-      {"category_id":14,"category_name":"Everyday",},
-      {"category_id":12,"category_name":"Fine Art Nude",},
-      {"category_id":3,"category_name":"Humour",},
-      {"category_id":2,"category_name":"Macro",},
-      {"category_id":4,"category_name":"Mood",},
-      {"category_id":9,"category_name":"Night",},
-      {"category_id":19,"category_name":"Performance",},
-      {"category_id":13,"category_name":"Portrait",},
-      {"category_id":18,"category_name":"Still life",},
-      {"category_id":7,"category_name":"Street",},
-      {"category_id":20,"category_name":"Underwater",},
-      {"category_id":5,"category_name":"Wildlife",},
+      {"category_id":15,"category_name":"abstract",},
+      {"category_id":1,"category_name":"action",},
+      {"category_id":21,"category_name":"animals",},
+      {"category_id":11,"category_name":"architecture",},
+      {"category_id":17,"category_name":"conceptual",},
+      {"category_id":10,"category_name":"creative-edit",},
+      {"category_id":8,"category_name":"documentary",},
+      {"category_id":14,"category_name":"everyday",},
+      {"category_id":12,"category_name":"fine-art-nude",},
+      {"category_id":3,"category_name":"humour",},
+      {"category_id":2,"category_name":"macro",},
+      {"category_id":4,"category_name":"mood",},
+      {"category_id":9,"category_name":"night",},
+      {"category_id":19,"category_name":"performance",},
+      {"category_id":13,"category_name":"portrait",},
+      {"category_id":18,"category_name":"still-life",},
+      {"category_id":7,"category_name":"street",},
+      {"category_id":20,"category_name":"underwater",},
+      {"category_id":5,"category_name":"wildlife",},
     ];
     _tabController = TabController(length: _categories.length, vsync: this);
+    _tabController.addListener((){
+      print(_tabController.index);
+      var map = _categories[_tabController.index];
+      print(map);
+      html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+          .then((list) {
+            print(list);
+        map["list"] = list;
+        setState(() {});
+      });
+    });
   }
 
   Future html(url,nameEndQuot) async {
@@ -90,7 +101,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
       print(m.group(0));
     }
     print("end");
-    print(photos);
+    //print(photos);
     return photos;
     setState(() {});
   }
@@ -122,22 +133,6 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
         child: TabBarView(
           controller: _tabController,
           children: _categories.map((Map map) {
-            if(map["category_id"] == 0){
-              html("https://1x.com/","<")
-                  .then((list) {
-                //_photos = list;
-                map["list"] = list;
-                setState(() {});
-              });
-            }else {
-              /*Future.delayed(Duration(milliseconds: 800), (){
-                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
-                    .then((list) {
-                  map["list"] = list;
-                  setState(() {});
-                });
-              });*/
-            }
             if(map.containsKey("list")){
               return Container(
                 child: StaggeredGridView.countBuilder(
@@ -158,6 +153,23 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                     staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
               );
             }else {
+              print("=====================================");
+              if(map["category_id"] == 0){
+                html("https://1x.com/","<")
+                    .then((list) {
+                  //_photos = list;
+                  map["list"] = list;
+                  setState(() {});
+                });
+              }else {
+                /*Future.delayed(Duration(milliseconds: 800), (){
+                html("https://1x.com/photos/latest/" + map["category_name"],'\"')
+                    .then((list) {
+                  map["list"] = list;
+                  setState(() {});
+                });
+              });*/
+              }
               return Container();
             }
           }).toList(),
