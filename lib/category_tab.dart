@@ -93,7 +93,9 @@ class TabState extends State<CategoryTab>{
     List<Map> parsedPhotos = parse(response.data);
     _loadIndex += parsedPhotos.length;
     _photos.addAll(parsedPhotos);
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   parse(data){
