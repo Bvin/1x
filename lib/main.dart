@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart' as dom;
 import 'package:onex/photo_page.dart';
 
 import 'category_tab.dart';
@@ -10,7 +8,10 @@ import 'event_bus_service.dart';
 
 void main() => runApp(MaterialApp(
   title: '1x App',
-  theme: ThemeData.dark(),
+  theme: ThemeData(
+    platform: TargetPlatform.iOS,
+    brightness: Brightness.dark,
+  ),
   home: HomePage(),
 ));
 
