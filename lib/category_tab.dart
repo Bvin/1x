@@ -9,8 +9,9 @@ import 'gallary_page.dart';
 class CategoryTab extends StatefulWidget{
 
   final cat;
+  final rootContext;
 
-  CategoryTab(this.cat);
+  CategoryTab(this.cat,this.rootContext);
 
   @override
   State<StatefulWidget> createState() {
@@ -60,7 +61,7 @@ class TabState extends State<CategoryTab>{
             return GestureDetector(
               child: CachedNetworkImage(imageUrl: url,),
               onTap: () {
-                Navigator.of(context).push(
+                Navigator.of(widget.rootContext).push(
                     MaterialPageRoute(
                         builder: (bc) => GalleryPage(_photos,index)
                     )

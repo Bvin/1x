@@ -8,7 +8,11 @@ import 'package:onex/photo_page.dart';
 import 'category_tab.dart';
 import 'event_bus_service.dart';
 
-void main() => runApp(HomePage());
+void main() => runApp(MaterialApp(
+  title: '1x App',
+  theme: ThemeData.dark(),
+  home: HomePage(),
+));
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,13 +37,9 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '1x App',
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        body: body(),
-      ),
-    );
+    return Scaffold(
+        body: body(context),
+      );
   }
 
   localCategories(){
@@ -116,7 +116,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     setState(() {});
   }
 
-  body() {
+  body(context) {
     return NestedScrollView(
       headerSliverBuilder: (buildContext, innerBoxIsScrolled) => <Widget>[
         SliverAppBar(
@@ -166,7 +166,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                   setState(() {});
                 });
               }else {
-                return CategoryTab(map["category_name"]);
+                return CategoryTab(map["category_name"], context);
               }
               return Container();
             }
