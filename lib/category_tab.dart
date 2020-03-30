@@ -52,6 +52,7 @@ class TabState extends State<CategoryTab>{
       onRefresh: _refreshData,
       child: Container(
         child: StaggeredGridView.countBuilder(
+          key: PageStorageKey(widget.cat),
           controller: _scrollController,
           itemCount: _photos.length,
           crossAxisCount: 2,
