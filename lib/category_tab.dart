@@ -112,15 +112,28 @@ class TabState extends State<CategoryTab>{
       photos.add(map);
     }
     print("end");
+
     print("start");
-    regExp = RegExp("&copy;.*?<");
+    regExp = RegExp("&copy.*?<");
     Iterable<Match>  _matches = regExp.allMatches(data);
     for (int i=0;i<_matches.length;i++) {
       Match m = _matches.elementAt(i);
       Map map = photos[i];
       String name = m.group(0);
       map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf("<")).trim();
-      print(m.group(0));
+      print(name);
+    }
+    print("end${_matches.length}");
+
+    print("start");
+    RegExp _regExp = RegExp("\/member\/.*?\"");
+    Iterable<Match> __matches = _regExp.allMatches(data);
+    for (int i=0;i<__matches.length;i++) {
+      Match m = __matches.elementAt(i);
+      Map map = photos[i];
+      String name = m.group(0);
+      map["memberid"] = name.substring(name.indexOf("/member/"),name.indexOf('"')).trim();
+      //print(name);
     }
     print("end");
     return photos;
