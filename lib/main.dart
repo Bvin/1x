@@ -152,7 +152,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                             Navigator.of(buildContext).push(MaterialPageRoute(
                                 builder: (c) =>
                                     PhotoPage("https://gallery.1x.com" +
-                                        _photos[index]["url"])));
+                                        map["list"][index]["url"])));
                           },),
                     staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
               );
