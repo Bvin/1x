@@ -28,6 +28,7 @@ class PageState extends State<MemberPage>{
   String _sort = "latest";
   int _loadIndex = 0;
   ScrollController _scrollController;
+  bool _showLoading = false;
 
   @override
   void initState() {
@@ -56,23 +57,24 @@ class PageState extends State<MemberPage>{
   }
 
   body() {
-    return NestedScrollView(
-      headerSliverBuilder: (buildContext, innerBoxIsScrolled) => <Widget>[
-        SliverAppBar(
-          leading: GestureDetector(child: Icon(Icons.arrow_back_ios), onTap: (){
-            Navigator.of(context).pop();
-          },),
-          title: Text(widget.name),
-          expandedHeight: 200,
-          flexibleSpace: FlexibleSpaceBar(
-            title: nameAvatar(widget.name, avatar),
-            background: Container(child: background(backgroundImage), margin: EdgeInsets.only(bottom: 45),),
-          ),
-        ),
-      ],
-        body: RefreshIndicator(
-          onRefresh: _refreshData,
-          child:  StaggeredGridView.countBuilder(
+    return Stack(children: <Widget>[
+      NestedScrollView(
+          headerSliverBuilder: (buildContext, innerBoxIsScrolled) => <Widget>[
+            SliverAppBar(
+              leading: GestureDetector(child: Icon(Icons.arrow_back_ios), onTap: (){
+                Navigator.of(context).pop();
+              },),
+              title: Text(widget.name),
+              expandedHeight: 200,
+              flexibleSpace: FlexibleSpaceBar(
+                title: nameAvatar(widget.name, avatar),
+                background: Container(child: background(backgroundImage), margin: EdgeInsets.only(bottom: 45),),
+              ),
+            ),
+          ],
+          body: RefreshIndicator(
+            onRefresh: _refreshData,
+            child:  StaggeredGridView.countBuilder(
               key: PageStorageKey(widget.memberId),
               itemCount: _photos.length,
               crossAxisCount: 2,
@@ -91,7 +93,14 @@ class PageState extends State<MemberPage>{
               },
               staggeredTileBuilder: (index) => StaggeredTile.fit(1),
             ),
-    ));
+          )),
+      Center(
+        child: Visibility(
+          child: CircularProgressIndicator(),
+          visible: _showLoading,
+        ),
+      )
+    ],);
   }
 
   header(background,avatar,name){
@@ -135,6 +144,8 @@ class PageState extends State<MemberPage>{
 
   loadMember() async {
     print(widget.memberId);
+    _showLoading = true;
+    setState(() {});
     Response response = await _dio.get("https://1x.com${widget.memberId}");
     String data = response.data;
     RegExp regExp = RegExp("\/images\/profile.*?jpg");
@@ -163,6 +174,7 @@ class PageState extends State<MemberPage>{
     List<Map> parsedPhotos = parse(response.data);
     _loadIndex += parsedPhotos.length;
     _photos.addAll(parsedPhotos);
+    _showLoading = false;
     if(mounted) {
       setState(() {});
     }
