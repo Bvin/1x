@@ -11,6 +11,7 @@ void main() => runApp(MaterialApp(
   theme: ThemeData(
     platform: TargetPlatform.iOS,
     brightness: Brightness.dark,
+    accentColor: Colors.white,
   ),
   home: HomePage(),
 ));
@@ -28,6 +29,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   List<Map> _photos = List();
   TabController _tabController;
   Dio _dio;
+  bool _showLoading = false;
 
   @override
   void initState() {
@@ -81,14 +83,14 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     });
   }
 
-  api(){
-    _dio.get("https://1x.com/backend/loadmore.php",);
-  }
-
   Future html(url,nameEndQuot) async {
     List<Map> photos = List();
     Dio dio = Dio();
-    Response response = await dio.get(url);
+    _showLoading = true;
+    setState(() {});
+    Response response = await dio.get(url, onReceiveProgress: (c,t){
+      print("$c/$t");
+    });
     String data = response.data;
     print("start");
     RegExp regExp = RegExp("\/images\/user.*?jpg");
@@ -134,8 +136,9 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
           ),
         ),
       ],
-      body: Container(
-        child: TabBarView(
+      body: Stack(
+        children:[
+          TabBarView(
           controller: _tabController,
           children: _categories.map((Map map) {
             if(map.containsKey("list")){
@@ -164,6 +167,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                     .then((list) {
                   //_photos = list;
                   map["list"] = list;
+                  _showLoading = false;
                   setState(() {});
                 });
               }else {
@@ -173,6 +177,13 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             }
           }).toList(),
         ),
+          Center(
+            child: Visibility(
+              child: CircularProgressIndicator(),
+              visible: _showLoading,
+            ),
+          )
+        ],
       ),
     );
   }
