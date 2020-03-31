@@ -59,6 +59,9 @@ class PageState extends State<MemberPage>{
     return NestedScrollView(
       headerSliverBuilder: (buildContext, innerBoxIsScrolled) => <Widget>[
         SliverAppBar(
+          leading: GestureDetector(child: Icon(Icons.arrow_back_ios), onTap: (){
+            Navigator.of(context).pop();
+          },),
           title: Text(widget.name),
           expandedHeight: 200,
           flexibleSpace: FlexibleSpaceBar(
@@ -112,7 +115,7 @@ class PageState extends State<MemberPage>{
   background(background){
     return background == null ? Container() :CachedNetworkImage(
       imageUrl: background,
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.fitHeight,
     );
   }
 
