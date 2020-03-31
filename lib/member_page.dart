@@ -102,16 +102,17 @@ class PageState extends State<MemberPage>{
     print(widget.memberId);
     Response response = await _dio.get("https://1x.com${widget.memberId}");
     String data = response.data;
-    /*RegExp regExp = RegExp("background-image:url\(.*?jpg");
+    RegExp regExp = RegExp("\/images\/profile.*?jpg");
     Match cover = regExp.firstMatch(data);
     avatar = "https://gallery.1x.com"+cover.group(0);
-    print(avatar);*/
+    print(avatar);
 
-    RegExp regExp = RegExp("\/images\/profile.*?jpg");
+    regExp = RegExp("\/images\/cover.*?jpg");
     Match profile = regExp.firstMatch(data);
-    backgroundImage = "https://gallery.1x.com"+profile.group(0);
-    print(backgroundImage);
-
+    if (profile.groupCount > 0) {
+      backgroundImage = "https://gallery.1x.com" + profile.group(0);
+      print(backgroundImage);
+    }
     setState(() {});
   }
 
