@@ -62,8 +62,12 @@ class PageState extends State<MemberPage>{
           title: Text(widget.name),
           expandedHeight: 200,
           flexibleSpace: FlexibleSpaceBar(
-            title: avatar == null?Container():CircleAvatar(child: CachedNetworkImage(imageUrl: avatar,),),
-            background: backgroundImage == null?Container():CachedNetworkImage(imageUrl: backgroundImage,),
+            title: avatar == null ? Container() : CircleAvatar(
+              child: CachedNetworkImage(imageUrl: avatar,),),
+            background: backgroundImage == null ? Container(): CachedNetworkImage(
+                imageUrl: backgroundImage,
+                fit: BoxFit.fitHeight,
+              ),
           ),
         ),
       ],
@@ -139,7 +143,6 @@ class PageState extends State<MemberPage>{
     List<Map> photos = List();
     RegExp regExp = RegExp("\/images\/user.*?jpg");
     Iterable<Match> matches = regExp.allMatches(data);
-    print(matches.length);
     for (Match m in matches) {
       Map map = Map();
       map["url"] = m.group(0);
@@ -154,7 +157,6 @@ class PageState extends State<MemberPage>{
       Map map = photos[i];
       String name = m.group(0);
       map["author"] = name.substring(name.indexOf(" "),name.lastIndexOf("<")).trim();
-      print(m.group(0));
     }
     print("end");
     return photos;
