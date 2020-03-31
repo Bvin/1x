@@ -26,6 +26,7 @@ class TabState extends State<CategoryTab>{
   String _sort = "latest";
   int _loadIndex = 0;
   ScrollController _scrollController;
+  bool _showLoading = false;
 
   @override
   void initState() {
@@ -50,28 +51,36 @@ class TabState extends State<CategoryTab>{
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: _refreshData,
-      child: Container(
-        child: StaggeredGridView.countBuilder(
-          key: PageStorageKey(widget.cat),
-          controller: _scrollController,
-          itemCount: _photos.length,
-          crossAxisCount: 2,
-          itemBuilder: (BuildContext buildContext, int index) {
-            print(index);
-            var url = "https://gallery.1x.com" + _photos[index]["url"];
-            return GestureDetector(
-              child: CachedNetworkImage(imageUrl: url,),
-              onTap: () {
-                Navigator.of(widget.rootContext).push(
-                    MaterialPageRoute(
-                        builder: (bc) => GalleryPage(_photos,index)
-                    )
-                );
-              },
-            );
-          },
-          staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-        ),
+      child: Stack(
+        children: <Widget>[
+          StaggeredGridView.countBuilder(
+            key: PageStorageKey(widget.cat),
+            controller: _scrollController,
+            itemCount: _photos.length,
+            crossAxisCount: 2,
+            itemBuilder: (BuildContext buildContext, int index) {
+              print(index);
+              var url = "https://gallery.1x.com" + _photos[index]["url"];
+              return GestureDetector(
+                child: CachedNetworkImage(imageUrl: url,),
+                onTap: () {
+                  Navigator.of(widget.rootContext).push(
+                      MaterialPageRoute(
+                          builder: (bc) => GalleryPage(_photos,index)
+                      )
+                  );
+                },
+              );
+            },
+            staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+          ),
+          Center(
+            child: Visibility(
+              child: CircularProgressIndicator(),
+              visible: _showLoading,
+            ),
+          )
+        ]
       ),
     );
   }
@@ -84,6 +93,10 @@ class TabState extends State<CategoryTab>{
   }
 
   load() async {
+    if(_loadIndex == 0){
+      _showLoading = true;
+      setState(() {});
+    }
     Response response = await _dio.get("https://1x.com/backend/loadmore.php",
         queryParameters: {
           "app": "photos",
@@ -95,6 +108,7 @@ class TabState extends State<CategoryTab>{
     List<Map> parsedPhotos = parse(response.data);
     _loadIndex += parsedPhotos.length;
     _photos.addAll(parsedPhotos);
+    _showLoading = false;
     if(mounted) {
       setState(() {});
     }
