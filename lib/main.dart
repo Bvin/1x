@@ -132,7 +132,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             tabs: _categories.map((Map map) => Container(
               padding: EdgeInsets.symmetric(vertical: 12,horizontal: 5),
               child: Text(map["display_name"],
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 18),
               ),
             )).toList(),
           ),
