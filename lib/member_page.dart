@@ -188,6 +188,7 @@ class PageState extends State<MemberPage>{
     for (Match m in matches) {
       Map map = Map();
       map["url"] = m.group(0);
+      map["author"] = widget.name;
       photos.add(map);
     }
     print("end");
