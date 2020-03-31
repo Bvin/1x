@@ -19,7 +19,7 @@ class CategoryTab extends StatefulWidget{
   }
 }
 
-class TabState extends State<CategoryTab>{
+class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
 
   List<Map> _photos = List();
   Dio _dio;
@@ -49,6 +49,7 @@ class TabState extends State<CategoryTab>{
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return RefreshIndicator(
       onRefresh: _refreshData,
       child: Stack(
@@ -152,5 +153,8 @@ class TabState extends State<CategoryTab>{
     print("end");
     return photos;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }
