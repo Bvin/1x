@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:onex/photo_page.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import 'member_page.dart';
@@ -47,7 +48,7 @@ class PageState extends State<GalleryPage>{
             itemCount: widget.photos.length,
             builder: (BuildContext context, int index) {
               var url = widget.photos[index]["url"];
-              url = "https://gallery.1x.com" + url.replaceAll("ld", "hd4");
+              url = "https://gallery.1x.com" + url.replaceAll("ld", "sd2");
               return PhotoViewGalleryPageOptions(
                 imageProvider: CachedNetworkImageProvider(url),
               );
@@ -64,7 +65,11 @@ class PageState extends State<GalleryPage>{
                 (ctx) => MemberPage(_memberId, _name)
             ));
           },),
-          trailing: GestureDetector(child: Icon(Icons.favorite_border),),
+          trailing: GestureDetector(child: Icon(Icons.zoom_out_map), onTap: (){
+            var url = widget.photos[_pageController.page.floor()]["url"];
+            url = "https://gallery.1x.com" + url.replaceAll("ld", "hd4");
+            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => PhotoPage(url)));
+          },),
         ),
         )
       ] ,
