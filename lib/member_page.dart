@@ -62,12 +62,8 @@ class PageState extends State<MemberPage>{
           title: Text(widget.name),
           expandedHeight: 200,
           flexibleSpace: FlexibleSpaceBar(
-            title: avatar == null ? Container() : CircleAvatar(
-              child: CachedNetworkImage(imageUrl: avatar,),),
-            background: backgroundImage == null ? Container(): CachedNetworkImage(
-                imageUrl: backgroundImage,
-                fit: BoxFit.fitHeight,
-              ),
+            title: nameAvatar(widget.name, avatar),
+            background: Container(child: background(backgroundImage), margin: EdgeInsets.only(bottom: 45),),
           ),
         ),
       ],
@@ -95,6 +91,37 @@ class PageState extends State<MemberPage>{
     ));
   }
 
+  header(background,avatar,name){
+    return Stack(children: <Widget>[
+      Container(
+        child:  background == null ? Container() :CachedNetworkImage(
+          imageUrl: background,
+          fit: BoxFit.fitHeight,
+        ),
+      ),
+      Container(
+        child: Row(children: <Widget>[
+          avatar == null ? Container() : CircleAvatar(
+            backgroundImage: CachedNetworkImageProvider(avatar,),),
+          Text(name),
+        ],),
+      )
+    ], alignment: Alignment.bottomCenter,
+    );
+  }
+  background(background){
+    return background == null ? Container() :CachedNetworkImage(
+      imageUrl: background,
+      fit: BoxFit.fitWidth,
+    );
+  }
+
+  nameAvatar(name,avatar){
+    return Row(children: <Widget>[
+      avatar == null ? Container() : CircleAvatar(
+        backgroundImage: CachedNetworkImageProvider(avatar,),),
+    ],);
+  }
 
   Future<Null> _refreshData() async {
     _photos.clear();
