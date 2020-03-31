@@ -51,6 +51,7 @@ class PageState extends State<MemberPage>{
       home: Scaffold(
         body: body(),
       ),
+      theme: ThemeData.dark(),
     );
   }
 
@@ -109,7 +110,7 @@ class PageState extends State<MemberPage>{
 
     regExp = RegExp("\/images\/cover.*?jpg");
     Match profile = regExp.firstMatch(data);
-    if (profile.groupCount > 0) {
+    if (profile != null) {
       backgroundImage = "https://gallery.1x.com" + profile.group(0);
       print(backgroundImage);
     }
