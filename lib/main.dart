@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:onex/photo_page.dart';
+import 'package:onex/tabs/mine_tab.dart';
 
 import 'category_tab.dart';
 import 'event_bus_service.dart';
@@ -64,6 +65,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     return <Widget>[
       HomeTab(context),
       ExploreTab(),
+      MineTab()
     ];
   }
 
