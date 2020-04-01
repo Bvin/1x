@@ -60,22 +60,34 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
 
   Widget grid(list){
     if(list == null) return Container();
-    return StaggeredGridView.countBuilder(
-        itemCount: list.length,
-        mainAxisSpacing: 2,
-        crossAxisSpacing: 2,
-        crossAxisCount: 2,
-        itemBuilder: (BuildContext buildContext, int index) =>
-            GestureDetector(child: Image.network(
-                "https://gallery.1x.com" +
-                    list[index]["url"]),
-              onTap: () {
-                Navigator.of(buildContext).push(MaterialPageRoute(
-                    builder: (c) =>
-                        PhotoPage("https://gallery.1x.com" +
-                            list[index]["url"])));
-              },),
-        staggeredTileBuilder: (index) => StaggeredTile.fit(1));
+    return Stack(children: <Widget>[
+      StaggeredGridView.countBuilder(
+          itemCount: list.length,
+          mainAxisSpacing: 2,
+          crossAxisSpacing: 2,
+          crossAxisCount: 2,
+          itemBuilder: (BuildContext buildContext, int index) =>
+              GestureDetector(child: Image.network(
+                  "https://gallery.1x.com" +
+                      list[index]["url"]),
+                onTap: () {
+                  Navigator.of(buildContext).push(MaterialPageRoute(
+                      builder: (c) =>
+                          PhotoPage("https://gallery.1x.com" +
+                              list[index]["url"])));
+                },),
+          staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
+      loading(_showLoading)
+    ],);
+  }
+
+  loading(show){
+    return Center(
+      child: Visibility(
+        child: CircularProgressIndicator(),
+        visible: show,
+      ),
+    );
   }
 
   Future html(p) async {
