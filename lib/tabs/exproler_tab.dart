@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onex/category_tab.dart';
 
+import '../event_bus_service.dart';
+
 class ExploreTab extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {

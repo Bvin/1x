@@ -39,12 +39,8 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
       }
 
     });
+    load();
     super.initState();
-    eventBus.on("onTabChange", (arg) {
-      if (arg == widget.cat) {
-        load();
-      }
-    });
   }
 
   @override
