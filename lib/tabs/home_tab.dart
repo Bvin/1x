@@ -32,9 +32,19 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
       Map map = tabs[_tabController.index];
       String p = map["name"];
       map["list"] = await html(p);
+      _showLoading = false;
       setState(() {});
     });
+    loadDefaultTab(tabs[0]);
     super.initState();
+  }
+
+
+  loadDefaultTab(map) async {
+    String p = map["name"];
+    map["list"] = await html(p);
+    _showLoading = false;
+    setState(() {});
   }
 
   @override
