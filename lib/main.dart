@@ -5,6 +5,7 @@ import 'package:onex/photo_page.dart';
 
 import 'category_tab.dart';
 import 'event_bus_service.dart';
+import 'tabs/home_tab.dart';
 
 void main() => runApp(MaterialApp(
   title: '1x App',
@@ -38,7 +39,7 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: body(context),
+        body: HomeTab(context),
         bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
           BottomNavigationBarItem(icon: Icon(Icons.explore), title: Text("Explore")),
