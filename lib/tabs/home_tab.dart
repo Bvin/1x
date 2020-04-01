@@ -19,7 +19,7 @@ class HomeTab extends StatefulWidget{
 class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
 
   TabController _tabController;
-  List<Map> tabArray = [
+  List<Map> tabs = [
     {"display":"POPULAR","name":"popular"},
     {"display":"AWARDED","name":"awarded"},
   ];
@@ -27,9 +27,9 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
-    _tabController = TabController(length: tabArray.length, vsync: this);
+    _tabController = TabController(length: tabs.length, vsync: this);
     _tabController.addListener(() async {
-      Map map = tabArray[_tabController.index];
+      Map map = tabs[_tabController.index];
       String p = map["name"];
       map["list"] = await html(p);
       setState(() {});
@@ -46,14 +46,14 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
             controller: _tabController,
             indicatorWeight: 1,
             indicatorSize: TabBarIndicatorSize.label,
-            tabs: tabArray.map((map) => Text(map["display"], style: TextStyle(fontWeight: FontWeight.w300),)).toList(),
+            tabs: tabs.map((map) => Text(map["display"], style: TextStyle(fontWeight: FontWeight.w300),)).toList(),
           ),
           actions: <Widget>[Icon(Icons.search)],
         )
       ],
       body: TabBarView(
           controller: _tabController,
-          children: tabArray.map((map) => grid(map["list"])).toList()
+          children: tabs.map((map) => grid(map["list"])).toList()
       ),
     );
   }

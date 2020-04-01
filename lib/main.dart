@@ -5,6 +5,7 @@ import 'package:onex/photo_page.dart';
 
 import 'category_tab.dart';
 import 'event_bus_service.dart';
+import 'tabs/exproler_tab.dart';
 import 'tabs/home_tab.dart';
 
 void main() => runApp(MaterialApp(
@@ -30,6 +31,8 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   TabController _tabController;
   bool _showLoading = false;
 
+  int currentTab = 0;
+
   @override
   void initState() {
     localCategories();
@@ -39,14 +42,31 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: HomeTab(context),
-        bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), title: Text("Explore")),
-          BottomNavigationBarItem(icon: Icon(Icons.person), title: Text("Mine")),
-        ]),
-      );
+      body: tabs(context)[currentTab],
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (index) {
+            currentTab = index;
+            setState(() {});
+          },
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), title: Text("Home")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.explore), title: Text("Explore")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person), title: Text("Mine")),
+          ]
+      ),
+    );
   }
+
+  tabs(context){
+    return <Widget>[
+      HomeTab(context),
+      ExploreTab(),
+    ];
+  }
+
 
   localCategories(){
     _categories = <Map>[
