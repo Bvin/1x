@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../photo_page.dart';
+import 'follows_tab.dart';
 
 class MineTab extends StatefulWidget{
   @override
@@ -65,26 +66,7 @@ class TabState extends State<MineTab> with SingleTickerProviderStateMixin{
   }
 
   favoriteTab(List<Map> list){
-    if(list == null) return Container();
-    return Stack(children: <Widget>[
-      StaggeredGridView.countBuilder(
-          itemCount: list.length,
-          mainAxisSpacing: 2,
-          crossAxisSpacing: 2,
-          crossAxisCount: 2,
-          itemBuilder: (BuildContext buildContext, int index) =>
-              GestureDetector(child: Image.network(
-                  "https://gallery.1x.com" +
-                      list[index]["url"]),
-                onTap: () {
-                  Navigator.of(buildContext).push(MaterialPageRoute(
-                      builder: (c) =>
-                          PhotoPage("https://gallery.1x.com" +
-                              list[index]["url"])));
-                },),
-          staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
-      loading(_showLoading)
-      ]);
+    return FollowsTab("bvin");
   }
 
   historyTab(){

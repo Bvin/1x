@@ -1,28 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:html/dom.dart' as html;
 
-import 'gallary_page.dart';
+class FollowsTab extends StatefulWidget{
 
-class CategoryTab extends StatefulWidget{
+  final userid;
 
-  final cat;
-  final rootContext;
-
-  CategoryTab(this.cat,this.rootContext);
+  FollowsTab(this.userid);
 
   @override
   State<StatefulWidget> createState() {
     return TabState();
   }
 }
+class TabState extends State<FollowsTab>{
 
-class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
-
-  List<Map> _photos = List();
+  List<Map> _members = List();
   Dio _dio;
-  String _sort = "latest";
+  String _sort = "following";
   int _loadIndex = 0;
   ScrollController _scrollController;
   bool _showLoading = false;
@@ -30,59 +27,29 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
   @override
   void initState() {
     _dio = Dio();
-    _scrollController = ScrollController();
-    _scrollController.addListener((){
-      if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
-        load();
-        print("加载下一页");
-      }
-    });
     load();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return RefreshIndicator(
-      onRefresh: _refreshData,
-      child: Stack(
-        children: <Widget>[
-          StaggeredGridView.countBuilder(
-            key: PageStorageKey(widget.cat),
-            controller: _scrollController,
-            itemCount: _photos.length,
-            crossAxisCount: 2,
-            itemBuilder: (BuildContext buildContext, int index) {
-              print(index);
-              var url = "https://gallery.1x.com" + _photos[index]["url"];
-              return GestureDetector(
-                child: CachedNetworkImage(imageUrl: url,),
-                onTap: () {
-                  Navigator.of(widget.rootContext).push(
-                      MaterialPageRoute(
-                          builder: (bc) => GalleryPage(_photos,index)
-                      )
-                  );
-                },
-              );
-            },
-            staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-          ),
-          Center(
-            child: Visibility(
-              child: CircularProgressIndicator(),
-              visible: _showLoading,
-            ),
+    return followsTab(_members);
+  }
+
+  followsTab(List<Map> members){
+    if(members == null) return Container();
+    return Stack(children: <Widget>[
+      ListView.builder(
+          itemCount: members.length,
+          itemBuilder: (ctx, index) => ListTile(
+            leading: CircleAvatar(backgroundImage: CachedNetworkImageProvider(members[index]["img"]),),
+            title: Text(members[index]["name"]),
           )
-        ]
       ),
-    );
+    ],);
   }
 
   Future<Null> _refreshData() async {
-    _photos.clear();
-    setState(() {});
     _loadIndex = 0;
     load();
   }
@@ -92,17 +59,11 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
       _showLoading = true;
       setState(() {});
     }
-    Response response = await _dio.get("https://1x.com/backend/loadmore.php",
-        queryParameters: {
-          "app": "photos",
-          "cat": widget.cat,
-          "from": _loadIndex,
-          "sort": _sort,
-        }
+    Response response = await _dio.get("https://1x.com/backend/loadmore.php?app=members&from=0&userid=590298&sort=following",
     );
     List<Map> parsedPhotos = parse(response.data);
     _loadIndex += parsedPhotos.length;
-    _photos.addAll(parsedPhotos);
+    _members.addAll(parsedPhotos);
     _showLoading = false;
     if(mounted) {
       setState(() {});
@@ -110,6 +71,11 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
   }
 
   parse(data){
+    print(data);
+    html.Document document = html.Document.html(data);
+    List<html.Element> element = document.getElementsByClassName("members_name");
+    print(element);
+
     print("start");
     List<Map> photos = List();
     RegExp regExp = RegExp("\/images\/user.*?jpg");

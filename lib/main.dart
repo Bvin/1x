@@ -6,6 +6,7 @@ import 'package:onex/tabs/mine_tab.dart';
 
 import 'category_tab.dart';
 import 'event_bus_service.dart';
+import 'pages/critique_page.dart';
 import 'tabs/exproler_tab.dart';
 import 'tabs/home_tab.dart';
 
@@ -49,11 +50,14 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
             currentTab = index;
             setState(() {});
           },
+          currentIndex: currentTab,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(Icons.home), title: Text("Home")),
             BottomNavigationBarItem(
                 icon: Icon(Icons.explore), title: Text("Explore")),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.remove_red_eye), title: Text("Critique")),
             BottomNavigationBarItem(
                 icon: Icon(Icons.person), title: Text("Mine")),
           ]
@@ -65,7 +69,8 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
     return <Widget>[
       HomeTab(context),
       ExploreTab(),
-      MineTab()
+      CritiquePage(),
+      MineTab(),
     ];
   }
 
