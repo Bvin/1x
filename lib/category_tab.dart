@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -30,6 +31,7 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
   @override
   void initState() {
     _dio = Dio();
+    _dio.interceptors.add(DioCacheManager(CacheConfig()).interceptor);
     _scrollController = ScrollController();
     _scrollController.addListener((){
       if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent){
@@ -98,7 +100,8 @@ class TabState extends State<CategoryTab> with AutomaticKeepAliveClientMixin{
           "cat": widget.cat,
           "from": _loadIndex,
           "sort": _sort,
-        }
+        },
+        options: buildCacheOptions(Duration(minutes: 30))
     );
     List<Map> parsedPhotos = parse(response.data);
     _loadIndex += parsedPhotos.length;

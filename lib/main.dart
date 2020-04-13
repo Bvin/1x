@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:onex/photo_page.dart';
-import 'package:onex/tabs/mine_tab.dart';
 
 import 'category_tab.dart';
 import 'event_bus_service.dart';
@@ -59,8 +58,6 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
                 icon: Icon(Icons.explore), title: Text("Explore")),
             BottomNavigationBarItem(
                 icon: Icon(Icons.remove_red_eye), title: Text("Critique")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person), title: Text("Mine")),
           ]
       ),
     );
@@ -71,7 +68,6 @@ class PageState extends State<HomePage> with SingleTickerProviderStateMixin{
       HomeTab(context),
       ExploreTab(),
       CritiquePage(),
-      MineTab(),
     ];
   }
 

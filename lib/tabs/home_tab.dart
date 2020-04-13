@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -21,12 +22,15 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
   TabController _tabController;
   List<Map> tabs = [
     {"display":"POPULAR","name":"popular"},
+    {"display":"LASTEST","name":"latest"},
     {"display":"AWARDED","name":"awarded"},
   ];
   bool _showLoading = false;
+  Dio _dio = Dio();
 
   @override
   void initState() {
+    _dio.interceptors.add(DioCacheManager(CacheConfig()).interceptor);
     _tabController = TabController(length: tabs.length, vsync: this);
     _tabController.addListener(() async {
       Map map = tabs[_tabController.index];
@@ -58,7 +62,6 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
             indicatorSize: TabBarIndicatorSize.label,
             tabs: tabs.map((map) => Text(map["display"], style: TextStyle(fontWeight: FontWeight.w300),)).toList(),
           ),
-          actions: <Widget>[Icon(Icons.search)],
         )
       ],
       body: TabBarView(
@@ -102,10 +105,11 @@ class TabState extends State<HomeTab> with SingleTickerProviderStateMixin{
 
   Future html(p) async {
     List<Map> photos = List();
-    Dio dio = Dio();
     _showLoading = true;
     setState(() {});
-    Response response = await dio.get("https://1x.com/", queryParameters: {"p":p});
+    Response response = await _dio.get("https://1x.com/",
+        queryParameters: {"p": p},
+        options: buildCacheOptions(Duration(minutes: 30)));
     String data = response.data;
     print("start");
     RegExp regExp = RegExp("\/images\/user.*?jpg");
