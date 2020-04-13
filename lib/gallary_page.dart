@@ -74,7 +74,10 @@ class PageState extends State<GalleryPage>{
         )
       ] ,
       alignment: Alignment.bottomCenter,
-    ),),theme: ThemeData.dark(),);
+    ),),
+      theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 
 }
