@@ -18,6 +18,7 @@ void main() => runApp(MaterialApp(
     accentColor: Colors.white,
   ),
   home: HomePage(),
+  debugShowCheckedModeBanner: false,
 ));
 
 class HomePage extends StatefulWidget {
